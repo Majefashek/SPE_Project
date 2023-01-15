@@ -2,8 +2,24 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import RegisterUserForm,PostForm
 from django.contrib import messages
-from .models import Post,Jobs,CustomUser
+from .models import Post,Jobs,CustomUser,comments
 from django.contrib.auth.models import User
+
+def add_comment(request, post_id):
+    if request.method == 'POST':
+        text = request.POST['text']
+        user = request.user
+        post = Post.objects.get(id=post_id)
+        comments.objects.create(text=text, user=user, post=post)
+        return redirect('view_comments', post_id=post_id)
+    else:
+        return render(request, 'comments/add_comments.html')
+
+
+def view_comments(request, post_id):
+    comments = comments.objects.filter(post=post_id)
+    return render(request, 'comments/view_comments.html', {'comments': comments})
+
 
 def add_image(request):
     if request.method == "POST":
@@ -35,9 +51,9 @@ def Jobs(request):
 
 def home(request):
 
-	users=CustomUser.objects.all()
+	post=Post.objects.all()
 	
-	return render(request,'SPE_webapp/home.html',{'users':users})
+	return render(request,'SPE_webapp/home.html',{'post':post})
 
 
 def register_user(request):
