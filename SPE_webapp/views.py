@@ -3,7 +3,11 @@ from django.shortcuts import render, redirect
 from .forms import RegisterUserForm,PostForm
 from django.contrib import messages
 from .models import Post,Jobs,CustomUser,comments
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+
+
+
+
 
 def add_comment(request, post_id):
     if request.method == 'POST':
@@ -14,24 +18,31 @@ def add_comment(request, post_id):
         return redirect('view_comments', post_id=post_id)
     else:
         return render(request, 'comments/add_comments.html')
-
-
+		
 def view_comments(request, post_id):
-    comments = comments.objects.filter(post=post_id)
-    return render(request, 'comments/view_comments.html', {'comments': comments})
+	post_id = int(post_id)
+	
+	comment = comments.objects.filter(post=post_id)
+	return render(request, 'SPE_webapp/comments/view_comments.html', {'comment': comment,'post_id':post_id})
 
 
-def add_image(request):
-    if request.method == "POST":
+
+
+def add_post(request):
+    if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
             return redirect('home')
-        else:
-            print(form.errors)  # This will print the form errors to the console
     else:
         form = PostForm()
-    return render(request, 'SPE_webapp/add_image.html', {'form': form})
+    return render(request, 'SPE_webapp/add_post.html', {'form': form})
+
+
+    
+	
 
 jobs = Jobs.objects.all()
  
@@ -50,6 +61,7 @@ def Jobs(request):
 
 
 def home(request):
+	
 
 	post=Post.objects.all()
 	

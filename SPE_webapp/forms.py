@@ -25,4 +25,6 @@ class RegisterUserForm(UserCreationForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['content','image']
+        fields = ('title', 'content', 'image')
+        exclude = ('user',)
+
