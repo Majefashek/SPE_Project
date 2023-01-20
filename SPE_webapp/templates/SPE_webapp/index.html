@@ -160,7 +160,7 @@ form input[type="submit"]:hover{
   <div class="wrapper">
     <br>
     <img src="https://www.spe.org/media/filer_public_thumbnails/filer_public/bf/19/bf192052-f5ac-43ab-83d2-01ccc4596b35/spe-logo-blue.png__314x181_q85_subsampling-2.png"/>
-    <form action='{% url 'login_view' %}' method='POST' >
+    <form action="/home" method='POST'>
        {% csrf_token %}
       <div class="field email">
         <div class="input-area">
@@ -181,12 +181,12 @@ form input[type="submit"]:hover{
       <div class="pass-txt"><a href="#">Forgot password?</a></div>
 
 
-      <input type="Submit" value="Login">
+      <input type="submit" value="Login">
     </form>
     <div class="sign-txt">Not yet member? <a href="register_user">Signup now</a></div>
   </div>
 
-  <script>
+  <!-- <script>
     const form = document.querySelector("form");
     eField = form.querySelector(".username"),
     eInput = eField.querySelector("input"),
@@ -241,7 +241,7 @@ form input[type="submit"]:hover{
     }
     
   //if eField and pField doesn't contains error class that mean user filled details properly //re
-  </script>
+  </script> -->
 
 </body>
 </html>
