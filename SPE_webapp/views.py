@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 
 
 
-def add_comment(request, post_id):
+def add_comment(request,post_id):
     if request.method == 'POST':
         text = request.POST['text']
         user = request.user
@@ -17,13 +17,15 @@ def add_comment(request, post_id):
         comments.objects.create(text=text, user=user, post=post)
         return redirect('view_comments', post_id=post_id)
     else:
-        return render(request, 'comments/add_comments.html')
+        return render(request, 'SPE_webapp/comments/add_comments.html')
 		
 def view_comments(request, post_id):
-	post_id = int(post_id)
+	val=post_id
+	
+
 	
 	comment = comments.objects.filter(post=post_id)
-	return render(request, 'SPE_webapp/comments/view_comments.html', {'comment': comment,'post_id':post_id})
+	return render(request, 'SPE_webapp/comments/view_comments.html', {'comment': comment,'post_id':post_id,'val':val})
 
 
 
