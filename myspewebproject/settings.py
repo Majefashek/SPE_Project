@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'SPE_webapp',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -126,4 +127,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-AUTH_USER_MODEL = 'SPE_webapp.CustomUser'
+AUTH_USER_MODEL = 'account.CustomUser'
