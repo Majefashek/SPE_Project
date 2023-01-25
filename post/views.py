@@ -5,9 +5,6 @@ from django.contrib import messages
 from SPE_webapp.models import Jobs,Post,comments
 
 
-
-
-
 def add_comment(request,post_id):
     if request.method == 'POST':
         text = request.POST['text']
@@ -20,14 +17,8 @@ def add_comment(request,post_id):
 		
 def view_comments(request, post_id):
 	val=post_id
-	
-
-	
 	comment = comments.objects.filter(post=post_id)
 	return render(request, 'SPE_webapp/comments/view_comments.html', {'comment': comment,'post_id':post_id,'val':val})
-
-
-
 
 def add_post(request):
     if request.method == 'POST':
@@ -42,39 +33,12 @@ def add_post(request):
     return render(request, 'SPE_webapp/add_post.html', {'form': form})
 
 
-    
-	
-
 jobs = Jobs.objects.all()
  
-
 def Jobs(request):
-	
-
     if request.user.is_authenticated and request.user.is_admin:
         return render(request, 'SPE_webapp/Jobs.html', {'jobs': jobs})
     else:
         return render(request,'SPE_webapp/myjobs.html',{'jobs':jobs})
 
 
-
-	
-
-
-def home(request):
-	
-
-	post=Post.objects.all()
-	
-	return render(request,'SPE_webapp/home.html',{'post':post})
-
-
-	
-
-
-
-
-
-
-
-# Create your views here.
