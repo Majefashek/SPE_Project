@@ -23,10 +23,10 @@ def register_user(request):
 	return render(request, 'account/register_user.html', {
 		'form':form,
 		})
+
+
 def login_view(request):
 	if request.method=='POST':
-
-
 		username = request.POST['username']
 		password = request.POST['password']
 		user = authenticate(request, username=username, password=password)
@@ -38,6 +38,7 @@ def login_view(request):
 			return redirect('login_view')
 	else:
 		return render(request,"account/index.html")
+
 def myaccount(request):
     myid=request.user.id
     obj=CustomUser.objects.get(pk=myid)
