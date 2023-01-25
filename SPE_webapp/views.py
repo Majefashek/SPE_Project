@@ -44,12 +44,18 @@ def Jobs(request):
 
 
 def home(request):
-	if request.method == 'POST':
-		post = Post.objects.all()
-		return render(request,'SPE_webapp/home.html', {'post':post})
-	else:
-		messages.success(request, ('You are required to login in order to accesss this site'))
-		return redirect('login_view')
+    if request.user.is_authenticated:
+        post = Post.objects.all()
+        return render(request,'SPE_webapp/home.html', {'post':post})
+
+    else:
+        if request.method == 'POST':
+            post = Post.objects.all()
+            return render(request,'SPE_webapp/home.html', {'post':post})
+        else:
+            messages.success(request, ('You are required to login in order to accesss this site'))
+            return redirect('login_view')
+        
 
 
 
