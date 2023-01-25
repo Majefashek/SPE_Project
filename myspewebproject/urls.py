@@ -1,12 +1,14 @@
 
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('SPE_webapp.urls')),
+    path('', include('SPE_webapp.urls')),
+    path('', include('account.urls')),
+    path('post/', include('post.urls')),
     
 ]
 if settings.DEBUG:
