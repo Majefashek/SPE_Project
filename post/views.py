@@ -1,8 +1,21 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from SPE_webapp.forms import  PostForm
 from django.contrib import messages
 from SPE_webapp.models import Jobs,Post,comments
+from .models import likes
+from django.http import JsonResponse
+
+
+
+def like_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    likes.objects.create(post=post, user=request.user)
+    return {'like_count': post.likes_set.count()}
+
+
+
+
 
 
 def add_comment(request,post_id):
@@ -13,12 +26,12 @@ def add_comment(request,post_id):
         comments.objects.create(text=text, user=user, post=post)
         return redirect('view_comments', post_id=post_id)
     else:
-        return render(request, 'SPE_webapp/comments/add_comments.html')
+        return render(request, 'post/comments/add_comments.html')
 		
 def view_comments(request, post_id):
 	val=post_id
 	comment = comments.objects.filter(post=post_id)
-	return render(request, 'SPE_webapp/comments/view_comments.html', {'comment': comment,'post_id':post_id,'val':val})
+	return render(request, 'post/comments/view_comments.html', {'comment': comment,'post_id':post_id,'val':val})
 
 def add_post(request):
     if request.method == 'POST':
@@ -30,7 +43,7 @@ def add_post(request):
             return redirect('home')
     else:
         form = PostForm()
-    return render(request, 'SPE_webapp/add_post.html', {'form': form})
+    return render(request, 'post/add_post.html', {'form': form})
 
 
 jobs = Jobs.objects.all()

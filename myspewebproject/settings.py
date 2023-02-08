@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'SPE_webapp',
     'account',
+    'post',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -49,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'myspewebproject.urls'
@@ -128,3 +132,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_ROOT =  os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'account.CustomUser'
+
+CORS_ORIGIN_ALLOW_ALL = True
+#or
+# CORS_ORIGIN_WHITELIST = [
+#     "https://example.com",
+#     "http://localhost:8000",
+# ]
+CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
+CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']

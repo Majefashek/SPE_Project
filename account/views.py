@@ -6,6 +6,19 @@ from django.contrib import messages
 from .models import CustomUser
 from django.contrib.auth import get_user_model
 
+
+
+def Edit_account(request, account_id):
+    myaccount = CustomUser.objects.get(pk=account_id)
+    if request.method == "POST":
+        form = RegisterUserForm(request.POST, instance=myaccount)
+        if form.is_valid():
+            form.save()
+            return redirect('myaccount')
+    else:
+        form = RegisterUserForm(instance=myaccount)
+    return render(request, 'account/edit_account.html', {'form': form})
+
 def register_user(request):
 	if request.method == "POST":
 		form = RegisterUserForm(request.POST)
