@@ -29,7 +29,7 @@ def register_user(request):
 			user = authenticate(username=username, password=password)
 			login(request, user)
 			messages.success(request, ("Registration Successful!"))
-			return redirect('home')
+			return redirect('login_view')
 	else:
 		form = RegisterUserForm()
 
