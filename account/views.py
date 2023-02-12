@@ -1,24 +1,46 @@
-from django.shortcuts import render
+
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm
+from .forms import RegisterUserForm,Edit_userForm
 from django.contrib import messages
 from .models import CustomUser
 from django.contrib.auth import get_user_model
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from .forms import  MyPasswordChangeForm
+
+@login_required
+def change_password(request):
+	if request.method=='POST':
+		form=MyPasswordChangeForm(request.user,request.POST)
+		print(request.POST)
+		if form.is_valid():
+			user=form.save()
+			update_session_auth_hash(request,user)
+			return redirect('myaccount')
+
+	else:
+		form = MyPasswordChangeForm(request.user)
+		return render(request, 'account/change_password.html', {
+'form': form
+})
+
 
 
 
 def Edit_account(request, account_id):
     myaccount = CustomUser.objects.get(pk=account_id)
     if request.method == "POST":
-        form = RegisterUserForm(request.POST, instance=myaccount)
+        form = Edit_userForm(request.POST, instance=myaccount)
         if form.is_valid():
             form.save()
             return redirect('myaccount')
     else:
-        form = RegisterUserForm(instance=myaccount)
+        form = Edit_userForm(instance=myaccount)
     return render(request, 'account/edit_account.html', {'form': form})
 
+
+#modified register user so that it redirects to login page after successfull registration
 def register_user(request):
 	if request.method == "POST":
 		form = RegisterUserForm(request.POST)
@@ -57,4 +79,4 @@ def myaccount(request):
     obj=CustomUser.objects.get(pk=myid)
     return render(request,"account/myaccount.html", {'obj':obj})
 
-# Create your views here.
+
