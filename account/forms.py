@@ -2,6 +2,14 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from .models import CustomUser
+from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
+
+class MyPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    new_password1 = forms.CharField(widget=forms.PasswordInput)
+    new_password2 = forms.CharField(widget=forms.PasswordInput)
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
@@ -22,5 +30,5 @@ class RegisterUserForm(CustomUserCreationForm):
 class Edit_userForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('username','age', 'profile_image', 'bio' )
 
