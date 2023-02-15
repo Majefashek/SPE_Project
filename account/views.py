@@ -60,6 +60,7 @@ def register_user(request):
 		})
 
 
+
 def login_view(request):
 	if request.method=='POST':
 		username = request.POST['username']
@@ -77,6 +78,4 @@ def login_view(request):
 def myaccount(request):
     myid=request.user.id
     obj=CustomUser.objects.get(pk=myid)
-    return render(request,"account/myaccount.html", {'obj':obj})
-
-
+    return render(request,"account/myaccount.html", {'obj':obj})										

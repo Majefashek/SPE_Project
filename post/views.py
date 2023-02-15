@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect,get_object_or_404
 from SPE_webapp.forms import  PostForm
 from django.contrib import messages
-from SPE_webapp.models import Jobs,Post,comments
+from SPE_webapp.models import Jobs, Post, Comments
 from .models import likes
 from django.http import JsonResponse
 
@@ -10,12 +10,11 @@ from django.http import JsonResponse
 
 def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    likes.objects.create(post=post, user=request.user)
+    user = request.user
+    if likes.objects.filter(post=post, user=user).exists():
+        return {'error': 'You have already liked this post.'}
+    likes.objects.create(post=post, user=user)
     return {'like_count': post.likes_set.count()}
-
-
-
-
 
 
 def add_comment(request,post_id):
@@ -27,11 +26,17 @@ def add_comment(request,post_id):
         return redirect('view_comments', post_id=post_id)
     else:
         return render(request, 'post/comments/add_comments.html')
+
 		
 def view_comments(request, post_id):
 	val=post_id
 	comment = comments.objects.filter(post=post_id)
-	return render(request, 'post/comments/view_comments.html', {'comment': comment,'post_id':post_id,'val':val})
+	return render(request, 'post/comments/view_comments.html', {
+        'comment': comment,
+        'post_id':post_id,
+        'val':val,
+        })
+
 
 def add_post(request):
     if request.method == 'POST':
@@ -44,6 +49,7 @@ def add_post(request):
     else:
         form = PostForm()
     return render(request, 'post/add_post.html', {'form': form})
+
 
 
 jobs = Jobs.objects.all()

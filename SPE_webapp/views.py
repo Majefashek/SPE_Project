@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .forms import RegisterUserForm,PostForm
 from django.contrib import messages
-from .models import Jobs,Post,comments
+from .models import Jobs, Post, Comments
 from django_ajax import decorators
 
 
