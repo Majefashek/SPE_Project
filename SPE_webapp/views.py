@@ -23,8 +23,6 @@ def home(request):
         else:
             messages.success(request, ('You are required to login in order to accesss this site'))
             return redirect('login_view')
-        real
-kdmkenmkknekfnkklnfklrnklnlknlknrlk
 
 
 	
