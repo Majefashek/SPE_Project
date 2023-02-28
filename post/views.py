@@ -5,16 +5,23 @@ from django.contrib import messages
 from SPE_webapp.models import Jobs, Post, Comments
 from .models import likes
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
 
+def dislike(request,post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    user = request.user
+    likes.objects.filter(post=post, user=user).delete()
+    like_count = post.likes_set.count()
+    return JsonResponse({'like_count':like_count})
 
-
+@csrf_protect
 def like_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     user = request.user
-    if likes.objects.filter(post=post, user=user).exists():
-        return {'error': 'You have already liked this post.'}
-    likes.objects.create(post=post, user=user)
-    return {'like_count': post.likes_set.count()}
+    if not likes.objects.filter(post=post, user=user).exists():
+        likes.objects.create(post=post, user=user)
+        like_count = post.likes_set.count()
+        return JsonResponse({'like_count':like_count})
 
 
 def add_comment(request,post_id):

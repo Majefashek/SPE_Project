@@ -11,91 +11,120 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-blue-grey.css">
 <link rel='stylesheet' href="https://fonts.googleapis.com/css?family=Open+Sans">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
 
 <style>
 
 html, body, h1, h2, h3, h4, h5{font-family: "Open Sans", sans-serif}
+.main_body{
+  display:flex;
+  justify-content:center;
+  
+}
+
 </style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="w3-theme-l5">
   {% include 'SPE_webapp/navbar.html' %}
   <br>
   <br>
   <br>
- 
 
-  <center>
-    {% for post in post %}
-  <div class="card" style="width: 25rem;">
-    
-    <img src={{post.image.url}}  style="width: 25rem ">
-
+{% for post in post %}
+<div class="main_body">
+  <div class="card" style="width: 35rem; padding:2rem" >
+    <img src={{post.image.url}}  style="width: 31rem ">
       <div>
-        <form id="like-count" method="post" action="{% url 'like_post' post.id %}">
-            {% csrf_token %}
-            <div class="container text-center" style="display:inline-flex; height:5rem;padding-top:1rem">
-              
-                <div  style="margin-right:10rem; display:flex ; float:left">
-                  <button type="submit" class="btn btn-primary position-relative" >Likes
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      99+
-                      <span class="visually-hidden">unread messages</span>
-                    </span>
-                  </button>
-                </div>
-                <div  style="display:flex; float:right">
-                  <button type="submit" class="btn btn-primary position-relative" style="float: right"></i><a href="{% url 'view_comments' post.id %}">Comments</a></button>   
-                  </button>
-                <span id="like-count">{{ like_count }}</span>
-                </div>
-             
-            </div>
-                
-              
-            
-        </form>
+          <div class="container text-center" style="display:inline-flex; height:5rem;padding-top:1rem">
+            <form method="POST" class="like" data-post-id={{post.id}}>
+              {% csrf_token %}
+              <input type="hidden">
+                <a class="like-link" style="font-size:2rem;margin-right:1rem" data-likes="{{ post.likes_set.count }}"><i class="fa fa-heart"></i></a>
+            </form>
+            <div style="display:flex; float:right">
+              <a href="{% url 'view_comments' post.id %}" style="font-size:2rem;"><i class="far fa-comment"></i></a> 
+            </div> 
+          </div>
+          <span id="num-likes-{{ post.id }}"  style="margin-left:1rem"></span>
       </div>
-
   </div>
+</div>
   
 {% endfor %}
-</center>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"> </script>
+
 <script>
+  $.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                    }
+        });
+  $(document).ready(function() {
+    $(".like-link").each(function() {
+      var numLikes = $(this).data("likes");
+      var post_id = $(this).closest("form").data("post-id");
+      $("#num-likes-" + post_id).text(numLikes  + " likes");
+    // Check if the user has liked the post before
+    if ($(this).hasClass("liked")) {
+      $(this).css("color", "gray");
+      
+    } else {
+      $(this).css("color", "");
+    }
+     
+  });
 
-document.querySelector("#like-form").addEventListener("ajax:success", function(event) {
-  var data = event.detail[0];
-  document.querySelector("#like-count").textContent = data.like_count;
-});
-
-
-// Accordion
-function myFunction(id) {
-  var x = document.getElementById(id);
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-theme-d1";
-  } else { 
-    x.className = x.className.replace("w3-show", "");
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(" w3-theme-d1", "");
-  }
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
+    $(".like-link").click(function(event) {
+      event.preventDefault();
+      if ($(this).hasClass("liked")) {
+        $(this).css("color", "gray");
+        var form = $(this).closest("form");
+        var post_id = form.data("post-id");
+        $(this).removeClass("like");
+      
+        $.ajax({
+          url: "/post/dislikes/" + post_id + "",
+          type: 'POST',
+          data: form.serialize(),
+          success: function(data) {
+            $("#num-likes-" + post_id).text(data.like_count+ " likes");
+          },
+          error: function(xhr, status, error) {
+            console.log("An error occurred: " + error);
+          }
+        });
+        
+      } else {
+        $(this).css("color", "red");
+        $(this).addClass("liked");
+        
+        var form = $(this).closest("form");
+        var post_id = form.data("post-id");
+      
+        $.ajax({
+          url: "/post/likes/" + post_id + "",
+          type: 'POST',
+          data: form.serialize(),
+        
+          success: function(data) {
+            $("#num-likes-" + post_id).text(data.like_count+ " likes");
+          },
+          error: function(xhr, status, error) {
+            console.log("An error occurred: " + error);
+          }
+        });
+      }
+    });
+  })    
+   
 </script>
+
+
+
 </body>
 
 </html> 
