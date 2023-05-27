@@ -43,7 +43,7 @@ def Edit_account(request, account_id):
 #modified register user so that it redirects to login page after successfull registration
 def register_user(request):
 	if request.method == "POST":
-		form = RegisterUserForm(request.POST)
+		form = RegisterUserForm(request.POST,request.FILES)
 		if form.is_valid():
 			form.save()
 			username = form.cleaned_data['username']
@@ -52,8 +52,10 @@ def register_user(request):
 			login(request, user)
 			messages.success(request, ("Registration Successful!"))
 			return redirect('login_view')
+		
 	else:
 		form = RegisterUserForm()
+		
 
 	return render(request, 'account/register_user.html', {
 		'form':form,
@@ -78,4 +80,4 @@ def login_view(request):
 def myaccount(request):
     myid=request.user.id
     obj=CustomUser.objects.get(pk=myid)
-    return render(request,"account/myaccount.html", {'obj':obj})										
+    return render(request,"account/realaccount.html", {'obj':obj})										

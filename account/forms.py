@@ -18,7 +18,7 @@ class CustomUserCreationForm(UserCreationForm):
 class RegisterUserForm(CustomUserCreationForm):
 	class Meta:
 		model = CustomUser
-		fields = UserCreationForm.Meta.fields + ('age', 'profile_image', 'bio')
+		fields = UserCreationForm.Meta.fields + ( 'profile_image',)
 		
 
 	def __init__(self, *args, **kwargs):

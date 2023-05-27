@@ -1,9 +1,8 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from .forms import RegisterUserForm,PostForm
+from .forms import PostForm
 from django.contrib import messages
-from .models import Jobs, Post, Comments
-from post.models import likes
+from .models import Jobs, Post, Comments,likes
 from django_ajax import decorators
 
 

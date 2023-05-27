@@ -1,5 +1,7 @@
+
  {% extends 'SPE_webapp/base.html' %}
  {% block content %}
+ {% load custom_filters %}
 <!DOCTYPE html>
 <html>
 
@@ -22,6 +24,12 @@ html, body, h1, h2, h3, h4, h5{font-family: "Open Sans", sans-serif}
   justify-content:center;
   
 }
+.like{
+  color:gray
+}
+.liked{
+  color:red
+}
 
 </style>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -41,7 +49,12 @@ html, body, h1, h2, h3, h4, h5{font-family: "Open Sans", sans-serif}
             <form method="POST" class="like" data-post-id={{post.id}}>
               {% csrf_token %}
               <input type="hidden">
-                <a class="like-link" style="font-size:2rem;margin-right:1rem" data-likes="{{ post.likes_set.count }}"><i class="fa fa-heart"></i></a>
+              {% if post|user_has_liked_post:request.user %}
+              <a class="like-link" style="font-size:2rem;margin-right:1rem;color:red" data-likes="{{ post.likes_set.count }}"class="liked"><i class="fa fa-heart" ></i></a>
+              {% else %}
+              <a class="like-link" style="font-size:2rem;margin-right:1rem;" data-likes="{{ post.likes_set.count }}" class="like"  style="color:red" ><i class="fa fa-heart"></i></a>
+              {% endif %}
+          
             </form>
             <div style="display:flex; float:right">
               <a href="{% url 'view_comments' post.id %}" style="font-size:2rem;"><i class="far fa-comment"></i></a> 
@@ -69,57 +82,50 @@ html, body, h1, h2, h3, h4, h5{font-family: "Open Sans", sans-serif}
       var post_id = $(this).closest("form").data("post-id");
       $("#num-likes-" + post_id).text(numLikes  + " likes");
     // Check if the user has liked the post before
-    if ($(this).hasClass("liked")) {
-      $(this).css("color", "gray");
-      
-    } else {
-      $(this).css("color", "");
-    }
+    
      
   });
 
-    $(".like-link").click(function(event) {
-      event.preventDefault();
-      if ($(this).hasClass("liked")) {
-        $(this).css("color", "gray");
-        var form = $(this).closest("form");
-        var post_id = form.data("post-id");
-        $(this).removeClass("like");
-      
-        $.ajax({
-          url: "/post/dislikes/" + post_id + "",
-          type: 'POST',
-          data: form.serialize(),
-          success: function(data) {
-            $("#num-likes-" + post_id).text(data.like_count+ " likes");
-          },
-          error: function(xhr, status, error) {
-            console.log("An error occurred: " + error);
-          }
-        });
-        
-      } else {
-        $(this).css("color", "red");
-        $(this).addClass("liked");
-        
-        var form = $(this).closest("form");
-        var post_id = form.data("post-id");
-      
-        $.ajax({
-          url: "/post/likes/" + post_id + "",
-          type: 'POST',
-          data: form.serialize(),
-        
-          success: function(data) {
-            $("#num-likes-" + post_id).text(data.like_count+ " likes");
-          },
-          error: function(xhr, status, error) {
-            console.log("An error occurred: " + error);
-          }
-        });
-      }
-    });
+  $(".like-link").click(function(event) {
+    event.preventDefault();
+  
+    var form = $(this).closest("form");
+    var post_id = form.data("post-id");
+  
+    if ($(this).css("color") === "rgb(255, 0, 0)") {
+      $(this).css("color", "");
+  
+      $.ajax({
+        url: "/post/dislikes/" + post_id,
+        type: 'POST',
+        data: form.serialize(),
+        success: function(data) {
+          $("#num-likes-" + post_id).text(data.like_count + " likes");
+        },
+        error: function(xhr, status, error) {
+          console.log("An error occurred: " + error);
+        }
+      });
+    } else {
+      $(this).css("color", "red");
+  
+      $.ajax({
+        url: "/post/likes/" + post_id,
+        type: 'POST',
+        data: form.serialize(),
+  
+        success: function(data) {
+          $("#num-likes-" + post_id).text(data.like_count + " likes");
+        },
+        error: function(xhr, status, error) {
+          console.log("An error occurred: " + error);
+        }
+      });
+    }
+  });
+  
   })    
+      
    
 </script>
 

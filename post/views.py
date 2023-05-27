@@ -2,8 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect,get_object_or_404
 from SPE_webapp.forms import  PostForm
 from django.contrib import messages
-from SPE_webapp.models import Jobs, Post, Comments
-from .models import likes
+from SPE_webapp.models import Jobs, Post, Comments,likes
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect
 

@@ -1,37 +1,28 @@
-{%extends 'SPE_webapp/bootstrap.html' %}
-{% block content %}
-
-{% if form.errors %}
-	<div class="alert alert-warning alert-dismissible fade show" role="alert">
-            There was an error with your form...
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-
-
-
-{% endif %}	
-
-	<div class="shadow p-4 mb-5 bg-body rounded">
-	<h1>Register</h1>
-<br/>
-
-
-		<form action="" method=POST>
-			{% csrf_token %}
-
-			{{ form.as_p }}
-
-  
-
-
-			
-<br/><br/>
-			<input type="submit" value="Submit" class="btn btn-secondary">
-
-		</form>
-		
+{%extends 'SPE_webapp/bootstrap.html' %} {% block content %} {% if form.errors%}
+{{form.errors}}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  There was an error with your form...
+  <button
+    type="button"
+    class="btn-close"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+  ></button>
 </div>
-<br/><br/>	
+
+{% endif %}
+
+<div class="shadow p-4 mb-5 bg-body rounded">
+  <h1>Register</h1>
+  <br />
+
+  <form enctype="multipart/form-data" , method="POST">
+    {% csrf_token %}
+     {{ form.as_p }}
+
+    <br /><br />
+    <input type="submit" value="Submit" class="btn btn-secondary" />
+  </form>
+</div>
+<br /><br />
 {% endblock %}
-
-

@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +41,9 @@ INSTALLED_APPS = [
     'SPE_webapp',
     'account',
     'post',
-    
-    
+    'MySPEmessages',
+    'channels',
+      
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,14 @@ CORS_ORIGIN_ALLOW_ALL = True
 # ]
 CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'DELETE']
 CORS_ALLOW_HEADERS = ['Content-Type', 'Authorization']
+
+
+ASGI_APPLICATION = 'myspewebproject.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
+
+CACHE_BACKEND = 'django.core.cache.backends.dummy.DummyCache'
